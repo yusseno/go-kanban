@@ -1,4 +1,4 @@
-package jwt
+package security
 
 import (
 	"errors"
@@ -10,18 +10,18 @@ import (
 var jwtKey = []byte("supersecretkey")
 
 type JWTClaim struct {
-	Fullname   string
-	Email      string
-	Permission int
+	Fullname string
+	Email    string
+	Is_Role  int
 	jwt.StandardClaims
 }
 
-func GenerateJWT(email string, fullname string, permision int) (tokenString string, err error) {
+func GenerateJWT(email string, fullname string, is_role int) (tokenString string, err error) {
 	expirationTime := time.Now().Add(1 * time.Hour).Unix()
 	claims := &JWTClaim{
-		Email:      email,
-		Fullname:   fullname,
-		Permission: permision,
+		Email:    email,
+		Fullname: fullname,
+		Is_Role:  is_role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime,
 		},
