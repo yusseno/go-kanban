@@ -1,5 +1,5 @@
 # go-kanban
-go-kanban merupakan sourcode backend menggunakan golang
+go-kanban merupakan source code backend menggunakan golang
 ## Arsitektur
 - Golang
 - Mysql
