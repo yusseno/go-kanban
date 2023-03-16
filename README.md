@@ -2,7 +2,8 @@
 go-kanban merupakan source code backend menggunakan golang
 ## Arsitektur
 - Golang
-- Mysql
+- Mysql (db)
+- Redis (session)
 - Gin Fremwork
 - Gorm ORM
-- JWT
+- JWT (security)
