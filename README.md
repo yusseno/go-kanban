@@ -1,5 +1,5 @@
 # go-kanban
-## arsitektur
+## Arsitektur
 - Golang
 - Mysql
 - Gin Fremwork
