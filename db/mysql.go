@@ -2,7 +2,7 @@ package db
 
 import (
 	"fmt"
-	"go-kanban/entity"
+	"go-kanban/app/user/entity"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,7 +13,7 @@ const (
 	DB_PASSWORD = "admin"
 	DB_HOST     = "127.0.0.1"
 	DB_PORT     = "3306"
-	DB_NAME     = "jwt"
+	DB_NAME     = "go-kanban"
 )
 
 var db *gorm.DB

@@ -1,9 +1,9 @@
 package main
 
 import (
-	"go-kanban/app/handler"
-	"go-kanban/app/repository"
-	"go-kanban/app/service"
+	"go-kanban/app/user/handler"
+	"go-kanban/app/user/repository"
+	"go-kanban/app/user/service"
 	"go-kanban/db"
 
 	"github.com/gin-gonic/gin"
@@ -28,7 +28,9 @@ func main() {
 
 	r := gin.Default()
 
+	// group client user
 	r.GET("login", apiHandler.UserAPIHandler.UserLogin)
+	r.POST("register", apiHandler.UserAPIHandler.UserRegister)
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
