@@ -1,14 +1,34 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"go-kanban/app/handler"
+	"go-kanban/app/repository"
+	"go-kanban/app/service"
+	"go-kanban/db"
+
+	"github.com/gin-gonic/gin"
+)
+
+type APIHandler struct {
+	UserAPIHandler handler.UserAPI
+}
 
 func main() {
-	router := gin.Default()
+	//repository
+	userRepo := repository.NewUserRepository(db.ConnectDB())
 
-	router.GET("/test", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "test message",
-		})
-	})
-	router.Run() // listen and serve on 0.0.0.0:8080
+	//service
+	userService := service.NewUserService(userRepo)
+
+	//handlers
+	userAPIHandler := handler.NewUserAPI(userService)
+	apiHandler := APIHandler{
+		UserAPIHandler: userAPIHandler,
+	}
+
+	r := gin.Default()
+
+	r.GET("login", apiHandler.UserAPIHandler.UserLogin)
+
+	r.Run() // listen and serve on 0.0.0.0:8080
 }
