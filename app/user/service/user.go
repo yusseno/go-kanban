@@ -4,11 +4,11 @@ import (
 	"errors"
 	"go-kanban/app/user/entity"
 	"go-kanban/app/user/repository"
-	"go-kanban/jwt"
+	"go-kanban/security"
 )
 
 type UserService interface {
-	UserLogin(entity.User) error
+	UserLogin(entity.User) (entity.User, error)
 	UserRegister(entity.User) error
 }
 
@@ -22,16 +22,16 @@ func NewUserService(userRepository repository.UserRepository) UserService {
 	}
 }
 
-func (u *userService) UserLogin(user entity.User) error {
+func (u *userService) UserLogin(user entity.User) (entity.User, error) {
 	resUser, err := u.userRepository.UserLoginDB(user)
 	if err != nil {
-		return err
+		return entity.User{}, err
 	}
-	validator := jwt.CheckPasswordHash(user.Password, resUser.Password)
+	validator := security.CheckPasswordHash(user.Password, resUser.Password)
 	if !validator {
-		return errors.New("password not match")
+		return entity.User{}, errors.New("password not match")
 	}
-	return nil
+	return resUser, nil
 }
 
 func (u *userService) UserRegister(user entity.User) error {
@@ -40,7 +40,7 @@ func (u *userService) UserRegister(user entity.User) error {
 		return errors.New("user already exists")
 	}
 
-	hash, err := jwt.HashPassword(user.Password)
+	hash, err := security.HashPassword(user.Password)
 	if err != nil {
 		return errors.New("failed to hash password")
 	}

@@ -1,4 +1,4 @@
-package jwt
+package security
 
 import "golang.org/x/crypto/bcrypt"
 
