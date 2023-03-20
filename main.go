@@ -3,10 +3,13 @@ package main
 import (
 	"go-kanban/app/dashboard"
 	"go-kanban/app/home"
+	kanbanHandler "go-kanban/app/kanban/handler"
+	kanbanRepo "go-kanban/app/kanban/repository"
+	kanbanService "go-kanban/app/kanban/service"
 	"go-kanban/app/middelware"
-	"go-kanban/app/user/handler"
-	"go-kanban/app/user/repository"
-	"go-kanban/app/user/service"
+	userHandler "go-kanban/app/user/handler"
+	userRepo "go-kanban/app/user/repository"
+	userService "go-kanban/app/user/service"
 	"go-kanban/db"
 	"go-kanban/session"
 
@@ -14,20 +17,25 @@ import (
 )
 
 type APIHandler struct {
-	UserAPIHandler handler.UserAPI
+	UserAPIHandler     userHandler.UserAPI
+	CategoryAPIHandler kanbanHandler.CategoryAPI
 }
 
 func main() {
 	//repository
-	userRepo := repository.NewUserRepository(db.ConnectDB())
+	userRepo := userRepo.NewUserRepository(db.ConnectDB())
+	categoryRepo := kanbanRepo.NewCategoryRepository(db.ConnectDB())
 
 	//service
-	userService := service.NewUserService(userRepo)
+	userService := userService.NewUserService(userRepo)
+	categoryService := kanbanService.NewCategoryService(categoryRepo)
 
 	//handlers
-	userAPIHandler := handler.NewUserAPI(userService)
+	userAPIHandler := userHandler.NewUserAPI(userService)
+	categoryAPIHandler := kanbanHandler.NewCategoryAPI(categoryService)
 	apiHandler := APIHandler{
-		UserAPIHandler: userAPIHandler,
+		UserAPIHandler:     userAPIHandler,
+		CategoryAPIHandler: categoryAPIHandler,
 	}
 
 	session.SessionStore = session.NewRedisStore()
@@ -38,8 +46,11 @@ func main() {
 	r.GET("login", apiHandler.UserAPIHandler.UserLogin)
 	r.POST("register", apiHandler.UserAPIHandler.UserRegister)
 	r.GET("logout", middelware.AuthzUser(), apiHandler.UserAPIHandler.UserLogout)
+
 	r.GET("user", middelware.AuthzUser(), home.Home)
 	r.GET("dashboard", middelware.AuthzAdmin(), dashboard.Dashboard)
+
+	r.POST("category", apiHandler.CategoryAPIHandler.CreateCategory)
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

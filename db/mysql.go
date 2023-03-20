@@ -2,7 +2,8 @@ package db
 
 import (
 	"fmt"
-	"go-kanban/app/user/entity"
+	entityKanban "go-kanban/app/kanban/entity"
+	entityUser "go-kanban/app/user/entity"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,7 +32,7 @@ func ConnectDB() *gorm.DB {
 		return nil
 	}
 	// fmt.Println("Connected to database")
-	db.AutoMigrate(&entity.User{})
-	db.Delete(&entity.User{})
+	db.AutoMigrate(&entityUser.User{}, &entityKanban.Category{})
+	db.Delete(&entityUser.User{}, &entityKanban.Category{})
 	return db
 }
